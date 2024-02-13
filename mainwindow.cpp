@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "QFileDialog"
 #include "QStyle"
+#include <QTime>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,6 +29,20 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::on_position_changed(qint64 position)
+{
+    QTime q_time=QTime::fromMSecsSinceStartOfDay(position);
+    this->ui->labelProgress->setText(QString(q_time.toString("hh:mm:ss")));
+    this->ui->horizontalSliderProgress->setSliderPosition(position);
+}
+
+void MainWindow::on_duration_changed(qint64 duration)
+{
+    this->ui->horizontalSliderProgress->setMaximum(duration);
+    QTime q_time=QTime::fromMSecsSinceStartOfDay(duration);
+    ui->labelDuration->setText(QString("Duration: ").append(q_time.toString("hh:mm:ss")));
+}
+
 
 void MainWindow::on_pushButtonOpen_clicked()
 {
@@ -41,7 +56,10 @@ void MainWindow::on_pushButtonOpen_clicked()
     this->ui->labelFile->setText("File: "+file);
     this->setWindowTitle("MediaPlayerPD321 - "+file.split('/').last());
     this->m_player->setMedia(QUrl::fromLocalFile(file));
-    this->ui->labelDuration->setText(QString::number(this->m_player->duration()));
+    //this->ui->labelDuration->setText("Duration: "+QString::number(m_player->duration()));
+    //Connect
+    connect(m_player,&QMediaPlayer::durationChanged, this, &MainWindow::on_duration_changed);
+    connect(m_player,&QMediaPlayer::positionChanged, this, &MainWindow::on_position_changed);
 }
 
 
@@ -61,5 +79,11 @@ void MainWindow::on_pushButtonPlay_clicked()
 void MainWindow::on_pushButtonPause_clicked()
 {
     m_player->pause();
+}
+
+
+void MainWindow::on_horizontalSliderProgress_sliderMoved(int position)
+{
+    this->m_player->setPosition(position);
 }
 
