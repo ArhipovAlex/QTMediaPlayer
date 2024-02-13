@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>198</height>
+    <height>501</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>30</y>
+      <y>420</y>
       <width>40</width>
       <height>25</height>
      </rect>
@@ -34,7 +34,7 @@
    <widget class="QPushButton" name="pushButtonPrev">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>10</x>
       <y>30</y>
       <width>40</width>
       <height>25</height>
@@ -47,7 +47,7 @@
    <widget class="QPushButton" name="pushButtonPlay">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>50</x>
       <y>30</y>
       <width>40</width>
       <height>25</height>
@@ -60,7 +60,7 @@
    <widget class="QPushButton" name="pushButtonPause">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>90</x>
       <y>30</y>
       <width>40</width>
       <height>25</height>
@@ -73,7 +73,7 @@
    <widget class="QPushButton" name="pushButtonStop">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>130</x>
       <y>30</y>
       <width>40</width>
       <height>25</height>
@@ -86,7 +86,7 @@
    <widget class="QPushButton" name="pushButtonNext">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>170</x>
       <y>30</y>
       <width>40</width>
       <height>25</height>
@@ -112,9 +112,9 @@
    <widget class="QSlider" name="horizontalSliderVolume">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>220</x>
       <y>50</y>
-      <width>161</width>
+      <width>201</width>
       <height>21</height>
      </rect>
     </property>
@@ -128,7 +128,7 @@
    <widget class="QLabel" name="labelVolume">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>220</x>
       <y>30</y>
       <width>81</width>
       <height>16</height>
@@ -175,6 +175,16 @@
     </property>
     <property name="text">
      <string>Progress:</string>
+    </property>
+   </widget>
+   <widget class="QTableView" name="tableViewPlaylist">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>120</y>
+      <width>411</width>
+      <height>301</height>
+     </rect>
     </property>
    </widget>
   </widget>
