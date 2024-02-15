@@ -16,6 +16,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButtonPause->setIcon(style()->standardIcon(QStyle::SP_MediaPause));
     ui->pushButtonStop->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
     ui->pushButtonNext->setIcon(style()->standardIcon(QStyle::SP_MediaSeekForward));
+    ui->pushButtonMute->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
+    ui->pushButtonLoop->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+    ui->pushButtonShuffle->setText("312");
     //Player init
     m_player = new QMediaPlayer(this);
     m_player->setVolume(70);
@@ -37,6 +40,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(this->ui->pushButtonPrev, &QPushButton::clicked, this->m_playlist, &QMediaPlaylist::previous);
     connect(this->ui->pushButtonNext, &QPushButton::clicked, this->m_playlist, &QMediaPlaylist::next);
+    connect(this->m_playlist, &QMediaPlaylist::currentMediaChanged, this, [this]()
+    {
+        select_item();
+    });
 }
 
 MainWindow::~MainWindow()
@@ -79,7 +86,7 @@ void MainWindow::on_pushButtonOpen_clicked()
             (
                 this,
                 "OpenFile",
-                "C:\\Users\Sania\Music\Sabaton - 2023",
+                "C:\\Users\\Sania\\Music\\Sabaton - 2023",
                 "Audio files(*.mp3 *.flac);;MP-3(*.mp3);;Flac(*.flac)"
             );
     for(QString filesPath:files)
@@ -103,6 +110,7 @@ void MainWindow::on_horizontalSliderVolume_valueChanged(int value)
 void MainWindow::on_pushButtonPlay_clicked()
 {
     m_player->play();
+    select_item();
 }
 
 
@@ -115,5 +123,74 @@ void MainWindow::on_pushButtonPause_clicked()
 void MainWindow::on_horizontalSliderProgress_sliderMoved(int position)
 {
     this->m_player->setPosition(position);
+}
+
+
+void MainWindow::on_pushButtonMute_clicked()
+{
+    if (m_player->isMuted())
+    {
+        m_player->setMuted(false);
+        ui->pushButtonMute->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
+    }
+    else
+    {
+        m_player->setMuted(true);
+        ui->pushButtonMute->setIcon(style()->standardIcon(QStyle::SP_MediaVolumeMuted));
+    }
+}
+
+
+void MainWindow::on_pushButtonStop_clicked()
+{
+    m_player->stop();
+}
+
+void MainWindow::select_item()
+{
+    int row=m_playlist->currentIndex();
+    this->ui->tableViewPlaylist->selectRow(row);
+}
+
+
+void MainWindow::on_pushButtonPrev_clicked()
+{
+    select_item();
+}
+
+
+void MainWindow::on_pushButtonNext_clicked()
+{
+    select_item();
+}
+
+
+void MainWindow::on_tableViewPlaylist_doubleClicked(const QModelIndex &index)
+{
+    m_playlist->setCurrentIndex(index.row());
+    on_pushButtonPlay_clicked();
+}
+
+
+void MainWindow::on_pushButtonLoop_clicked()
+{
+    if(m_playlist->playbackMode()==QMediaPlaylist::Loop)
+    {
+        m_playlist->setPlaybackMode(QMediaPlaylist::Sequential);
+        ui->pushButtonLoop->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
+    }
+    else
+    {
+        m_playlist->setPlaybackMode(QMediaPlaylist::Loop);
+        ui->pushButtonLoop->setIcon(style()->standardIcon(QStyle::SP_BrowserReload));
+    }
+}
+
+
+void MainWindow::on_pushButtonShuffle_clicked()
+{
+    m_playlist->shuffle();
+    //m_playlist_model->clear();
+
 }
 

@@ -32,11 +32,28 @@ private slots:
 
     void on_horizontalSliderProgress_sliderMoved(int position);
 
+    void on_pushButtonMute_clicked();
+
+    void on_pushButtonStop_clicked();
+
+    void select_item();
+
+    void on_pushButtonPrev_clicked();
+
+    void on_pushButtonNext_clicked();
+
+    void on_tableViewPlaylist_doubleClicked(const QModelIndex &index);
+
+    void on_pushButtonLoop_clicked();
+
+    void on_pushButtonShuffle_clicked();
+
 private:
     Ui::MainWindow *ui;
     QMediaPlayer* m_player;
 
     QMediaPlaylist* m_playlist;
     QStandardItemModel* m_playlist_model;
+
 };
 #endif // MAINWINDOW_H

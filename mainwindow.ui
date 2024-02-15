@@ -128,7 +128,7 @@
    <widget class="QLabel" name="labelVolume">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>270</x>
       <y>30</y>
       <width>81</width>
       <height>16</height>
@@ -185,6 +185,45 @@
       <width>411</width>
       <height>301</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonMute">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>30</y>
+      <width>41</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonShuffle">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>420</y>
+      <width>41</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonLoop">
+    <property name="geometry">
+     <rect>
+      <x>380</x>
+      <y>420</y>
+      <width>41</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
