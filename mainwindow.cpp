@@ -44,14 +44,40 @@ MainWindow::MainWindow(QWidget *parent)
     {
         select_item();
     });
+    QString filename = DEFAULT_PLAYLIST_LOCATION + "playlist.m3u";
+    loadPlaylist(filename);
 }
 
 MainWindow::~MainWindow()
 {
+    QString filename = DEFAULT_PLAYLIST_LOCATION + "playlist.m3u";
+    savePlaylist(filename);
     delete m_playlist_model;
     delete m_playlist;
     delete m_player;
     delete ui;
+}
+
+void MainWindow::savePlaylist(QString filename)
+{
+    QString format = filename.split('.').last();
+    QUrl url = QUrl::fromLocalFile(filename);
+    m_playlist->save(url,format.toStdString().c_str());
+}
+
+void MainWindow::loadPlaylist(QString filename)
+{
+    QString format = filename.split('.').last();
+    QUrl url = QUrl::fromLocalFile(filename);
+    m_playlist->load(url,format.toStdString().c_str());
+    for(int i=0;i<m_playlist->mediaCount();i++)
+    {
+        QString url=m_playlist->media(i).canonicalUrl().url();
+        QList<QStandardItem*> items;
+        items.append(new QStandardItem(QDir(url).dirName()));
+        items.append(new QStandardItem(url));
+        m_playlist_model->appendRow(items);
+    }
 }
 
 void MainWindow::on_position_changed(qint64 position)
@@ -189,7 +215,7 @@ void MainWindow::on_pushButtonLoop_clicked()
 
 void MainWindow::on_pushButtonShuffle_clicked()
 {
-    m_playlist->shuffle();
+    m_playlist->setPlaybackMode(QMediaPlaylist::Random);
     //m_playlist_model->clear();
 
 }

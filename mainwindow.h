@@ -18,6 +18,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    void savePlaylist(QString filename);
+    void loadPlaylist(QString filename);
+
 private slots:
     void on_position_changed(qint64 position);
     void on_duration_changed(qint64 duration);
@@ -48,6 +51,8 @@ private slots:
 
     void on_pushButtonShuffle_clicked();
 
+
+
 private:
     Ui::MainWindow *ui;
     QMediaPlayer* m_player;
@@ -55,5 +60,6 @@ private:
     QMediaPlaylist* m_playlist;
     QStandardItemModel* m_playlist_model;
 
+    const QString DEFAULT_PLAYLIST_LOCATION = "D:\\Users\\Sania\\Source\\Qt\\build-MediaPlayer-Desktop_x86_windows_msvc2019_pe_64bit-Debug\\debug\\";
 };
 #endif // MAINWINDOW_H
