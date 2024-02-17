@@ -53,6 +53,10 @@ private slots:
 
 
 
+    void on_pushButtonClear_clicked();
+
+    void on_pushButtonDelete_clicked();
+
 private:
     Ui::MainWindow *ui;
     QMediaPlayer* m_player;

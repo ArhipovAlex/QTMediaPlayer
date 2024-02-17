@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButtonMute->setIcon(style()->standardIcon(QStyle::SP_MediaVolume));
     ui->pushButtonLoop->setIcon(style()->standardIcon(QStyle::SP_CommandLink));
     ui->pushButtonShuffle->setText("312");
+    ui->pushButtonDelete->setText("DEL");
+    ui->pushButtonClear->setText("CLR");
     //Player init
     m_player = new QMediaPlayer(this);
     m_player->setVolume(70);
@@ -113,7 +115,7 @@ void MainWindow::on_pushButtonOpen_clicked()
                 this,
                 "OpenFile",
                 "C:\\Users\\Sania\\Music\\Sabaton - 2023",
-                "Audio files(*.mp3 *.flac);;MP-3(*.mp3);;Flac(*.flac)"
+                "Audio files(*.mp3 *.flac);;MP-3(*.mp3);;Flac(*.flac);;Playlist(*.m3u *.m3u8)"
             );
     for(QString filesPath:files)
     {
@@ -218,5 +220,20 @@ void MainWindow::on_pushButtonShuffle_clicked()
     m_playlist->setPlaybackMode(QMediaPlaylist::Random);
     //m_playlist_model->clear();
 
+}
+
+
+void MainWindow::on_pushButtonClear_clicked()
+{
+    m_player->stop();
+    m_playlist->clear();
+    m_playlist_model->clear();
+}
+
+
+void MainWindow::on_pushButtonDelete_clicked()
+{
+    m_playlist->removeMedia(this->ui->tableViewPlaylist->currentIndex().row());
+    m_playlist_model->removeRow(this->ui->tableViewPlaylist->currentIndex().row());
 }
 
