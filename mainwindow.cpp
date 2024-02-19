@@ -4,6 +4,7 @@
 #include "QStyle"
 #include <QTime>
 #include <QMultimedia>
+#include <QMediaMetaData>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -104,10 +105,11 @@ void MainWindow::loadFileToPlaylist(QString filename)
     QMediaPlayer player;
     player.setMedia(QUrl(filename));
     player.media().resources();
-    QString duration;// = QTime::fromMSecsSinceStartOfDay(player.duration()).toString("hh:mm:ss");
-    connect(player,&MediaPlayer::durationChanged,[player, duration]{
-        duration = QTime::fromMSecsSinceStartOfDay(player.duration()).toString("hh:mm:ss");
-    });
+    //QString duration;// = QTime::fromMSecsSinceStartOfDay(player.duration()).toString("hh:mm:ss");
+    //connect(player,&MediaPlayer::durationChanged,[player, duration]{
+    //    duration = QTime::fromMSecsSinceStartOfDay(player.duration()).toString("hh:mm:ss");
+    //});
+    QString duration = QTime::fromMSecsSinceStartOfDay(player.duration()).toString("hh:mm:ss");
     ////////////////
 
     QList<QStandardItem*> items;
@@ -123,7 +125,8 @@ void MainWindow::setTitles()
 {
     QString title = m_playlist->currentMedia().canonicalUrl().url();
     this->setWindowTitle(title.split('/').last());
-    this->ui->labelFile->setText(title);
+    QString name=title.split('/').last()+" "+m_player->metaData(QMediaMetaData::SampleRate).toString()+" kHz, "+m_player->metaData(QMediaMetaData::AudioBitRate).toString()+" kbps";
+    this->ui->labelFile->setText(name);
 }
 
 QVector<QString> MainWindow::loadPlaylistToArray(QString filename)
