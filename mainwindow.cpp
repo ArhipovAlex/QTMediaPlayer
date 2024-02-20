@@ -5,6 +5,9 @@
 #include <QTime>
 #include <QMultimedia>
 #include <QMediaMetaData>
+#include <QMediaTimeInterval>
+#include <QMediaTimeRange>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -25,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButtonClear->setText("CLR");
     //      Player init
     m_player = new QMediaPlayer(this);
+    m_temp = new QMediaPlayer(this);
     m_player->setVolume(70);
     ui->labelVolume->setText(QString("Volume: ").append(QString::number(m_player->volume())));
     ui->horizontalSliderVolume->setValue(m_player->volume());
@@ -66,6 +70,7 @@ MainWindow::~MainWindow()
     delete m_playlist_model;
     delete m_playlist;
     delete m_player;
+    delete m_temp;
     delete ui;
 }
 
@@ -102,30 +107,48 @@ void MainWindow::loadFileToPlaylist(QString filename)
 
     ///////////////
 
-    QMediaPlayer player;
-    player.setMedia(QUrl(filename));
-    player.media().resources();
+    //QMediaPlayer player;
+    //player.setMedia(QUrl(filename));
+    //player.media().resources();
     //QString duration;// = QTime::fromMSecsSinceStartOfDay(player.duration()).toString("hh:mm:ss");
     //connect(player,&MediaPlayer::durationChanged,[player, duration]{
     //    duration = QTime::fromMSecsSinceStartOfDay(player.duration()).toString("hh:mm:ss");
     //});
-    QString duration = QTime::fromMSecsSinceStartOfDay(player.duration()).toString("hh:mm:ss");
+    //QString duration = QTime::fromMSecsSinceStartOfDay(player.duration()).toString("hh:mm:ss");
     ////////////////
+
+    QMediaPlayer* player = new QMediaPlayer();
+    m_temp->setMedia(QUrl(filename));
+
+
+    m_temp->setVolume(20);
+    //m_temp->play();
+    qint64 d1 = player->duration();
+    //qint64 d=m_temp->;
+    QVariant data = m_temp->metaData(QMediaMetaData::Duration);
+    //QTime duration(duration.toTime());
+    QString duration1 = QTime::fromMSecsSinceStartOfDay(m_temp->duration()).toString("hh:mm:ss");
 
     QList<QStandardItem*> items;
     items.append(new QStandardItem(QDir(filename).dirName()));
     items.append(new QStandardItem(filename));
-    items.append(new QStandardItem(duration));
+    //items.append(new QStandardItem(duration.toString("hh:mm:ss")));
+    //items.append(new QStandardItem(d));
+    connect(m_temp, &QMediaPlayer::durationChanged, this, [&](qint64 dur) {
+        QTime q_time=QTime::fromMSecsSinceStartOfDay(dur);
+        items.append(new QStandardItem(q_time.toString("hh:mm:ss")));
+    });
     m_playlist_model->appendRow(items);
     m_playlist->addMedia(QUrl(filename));
 
+    delete player;
 }
 
 void MainWindow::setTitles()
 {
     QString title = m_playlist->currentMedia().canonicalUrl().url();
     this->setWindowTitle(title.split('/').last());
-    QString name=title.split('/').last()+" "+m_player->metaData(QMediaMetaData::SampleRate).toString()+" kHz, "+m_player->metaData(QMediaMetaData::AudioBitRate).toString()+" kbps";
+    QString name=title.split('/').last()+" "+m_player->metaData(QMediaMetaData::SampleRate).toString()+" kHz, "+m_player->metaData(QMediaMetaData::AudioBitRate).toDouble()+" kbps";
     this->ui->labelFile->setText(name);
 }
 
