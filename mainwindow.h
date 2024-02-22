@@ -54,11 +54,13 @@ private slots:
 
     void on_pushButtonShuffle_clicked();
 
-
+    void onDurationChanged(qint64 d);
 
     void on_pushButtonClear_clicked();
 
     void on_pushButtonDelete_clicked();
+
+    void slotTimerAlarm();
 
 private:
     Ui::MainWindow *ui;
@@ -66,6 +68,8 @@ private:
     QMediaPlayer* m_temp;
     QMediaPlaylist* m_playlist;
     QStandardItemModel* m_playlist_model;
+    int position=0;
+    QTimer *timer;
 
     const QString DEFAULT_PLAYLIST_LOCATION = "D:\\Users\\Sania\\Source\\Qt\\build-MediaPlayer-Desktop_x86_windows_msvc2019_pe_64bit-Debug\\debug\\";
 };

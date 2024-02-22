@@ -8,6 +8,9 @@
 #include <QMediaTimeInterval>
 #include <QMediaTimeRange>
 #include <QMessageBox>
+#include <QAudioDecoder>
+#include <QTimer>
+#include <QTime>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -61,6 +64,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     QString filename = DEFAULT_PLAYLIST_LOCATION + "playlist.m3u";
     loadPlaylist(filename);
+
+    timer = new QTimer();
+    connect(m_temp,&QMediaPlayer::durationChanged,this,[this](){slotTimerAlarm();});
+    timer->start(100);
+    QVector<QString> lines = loadPlaylistToArray(filename);
+    m_temp->setMedia(QUrl(lines[0]));
+    int d=m_temp->duration();
+
 }
 
 MainWindow::~MainWindow()
@@ -98,6 +109,10 @@ void MainWindow::loadPlaylist(QString filename)
     for(int i=0;i<lines.size();i++)
     {
         loadFileToPlaylist(lines[i]);
+
+        ///
+
+        ///
     }
 }
 
@@ -120,24 +135,44 @@ void MainWindow::loadFileToPlaylist(QString filename)
     QMediaPlayer* player = new QMediaPlayer();
     m_temp->setMedia(QUrl(filename));
 
-
-    m_temp->setVolume(20);
+    m_temp->setVolume(50);
     //m_temp->play();
+
     qint64 d1 = player->duration();
     //qint64 d=m_temp->;
     QVariant data = m_temp->metaData(QMediaMetaData::Duration);
     //QTime duration(duration.toTime());
     QString duration1 = QTime::fromMSecsSinceStartOfDay(m_temp->duration()).toString("hh:mm:ss");
 
+    //QString dura;
+    //connect(m_temp, &QMediaPlayer::durationChanged, this, [&](qint64 dur) {
+    //    qDebug() << "duration = " << dur;
+    //    dura=QTime::fromMSecsSinceStartOfDay(m_temp->duration()).toString("hh:mm:ss");
+    //});
+
     QList<QStandardItem*> items;
     items.append(new QStandardItem(QDir(filename).dirName()));
     items.append(new QStandardItem(filename));
+
+    QMediaPlayer::State status=m_temp->state();
+    while (status==QMediaPlayer::LoadingMedia)
+    {
+
+    }
+    if(status==QMediaPlayer::LoadedMedia)m_temp->play();
+    if(status==QMediaPlayer::PlayingState)
+    {
+
+        //status=m_temp->state();
+        QString duration1 = QTime::fromMSecsSinceStartOfDay(m_temp->duration()).toString("hh:mm:ss");
+    items.append(new QStandardItem(duration1));
+    }
+
     //items.append(new QStandardItem(duration.toString("hh:mm:ss")));
     //items.append(new QStandardItem(d));
-    connect(m_temp, &QMediaPlayer::durationChanged, this, [&](qint64 dur) {
-        QTime q_time=QTime::fromMSecsSinceStartOfDay(dur);
-        items.append(new QStandardItem(q_time.toString("hh:mm:ss")));
-    });
+
+
+
     m_playlist_model->appendRow(items);
     m_playlist->addMedia(QUrl(filename));
 
@@ -148,7 +183,7 @@ void MainWindow::setTitles()
 {
     QString title = m_playlist->currentMedia().canonicalUrl().url();
     this->setWindowTitle(title.split('/').last());
-    QString name=title.split('/').last()+" "+m_player->metaData(QMediaMetaData::SampleRate).toString()+" kHz, "+m_player->metaData(QMediaMetaData::AudioBitRate).toDouble()+" kbps";
+    QString name=title.split('/').last()+" "+m_player->metaData(QMediaMetaData::SampleRate).toString()+" kHz, "+m_player->metaData(QMediaMetaData::AudioBitRate).toString()+" kbps";
     this->ui->labelFile->setText(name);
 }
 
@@ -162,6 +197,7 @@ QVector<QString> MainWindow::loadPlaylistToArray(QString filename)
         QByteArray line = file.readLine();
         lines.append(line);
     }
+    file.close();
     return lines.toVector();
 }
 
@@ -306,6 +342,13 @@ void MainWindow::on_pushButtonShuffle_clicked()
 
 }
 
+void MainWindow::onDurationChanged(qint64 d)
+{
+    QTime t(0,0,0,0);
+    t = t.addMSecs(d);
+    //this->ui->tableViewPlaylist
+}
+
 
 void MainWindow::on_pushButtonClear_clicked()
 {
@@ -319,5 +362,13 @@ void MainWindow::on_pushButtonDelete_clicked()
 {
     m_playlist->removeMedia(this->ui->tableViewPlaylist->currentIndex().row());
     m_playlist_model->removeRow(this->ui->tableViewPlaylist->currentIndex().row());
+}
+
+void MainWindow::slotTimerAlarm()
+{
+    QModelIndex s=m_playlist_model->index(position,1);
+    int d=m_temp->duration();
+    position++;
+
 }
 
